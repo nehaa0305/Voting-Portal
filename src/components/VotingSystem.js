@@ -8,7 +8,7 @@ const VotingSystem = () => {
 
   useEffect(() => {
     // Update WebSocket URL to the Vercel deployment URL
-    const ws = new WebSocket('wss://voting-portal-5pq6v1xm3-nehaa-shris-projects.vercel.app/api/websocket');
+    const ws = new WebSocket('wss://voting-portal-five.vercel.app/api/websocket');
 
     ws.onmessage = (event) => {
       const updatedVotes = JSON.parse(event.data);
