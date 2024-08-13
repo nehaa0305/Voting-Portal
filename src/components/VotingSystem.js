@@ -1,12 +1,20 @@
-// src/components/VotingSystem.js
-
-'use client';
-
 import { useState, useEffect } from 'react';
 
 const VotingSystem = () => {
   const [votes, setVotes] = useState({ for: 0, against: 0 });
   const [userVote, setUserVote] = useState(null);
+
+  // Retrieve or generate a unique userId
+  const getUserId = () => {
+    let userId = localStorage.getItem('userId');
+    if (!userId) {
+      userId = 'user-' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userId', userId);
+    }
+    return userId;
+  };
+
+  const userId = getUserId();
 
   useEffect(() => {
     fetch('/api/votes')
@@ -15,11 +23,9 @@ const VotingSystem = () => {
       .catch(error => console.error('Error fetching votes:', error));
   }, []);
 
-  const userId = 'user-unique-id'; // Replace with an actual unique user identifier
-
   const handleVote = (type) => {
     if (userVote === type) {
-      return; // No action if user is trying to vote the same again
+      return; // No action if the user is trying to vote the same again
     }
 
     fetch('/api/votes', {
