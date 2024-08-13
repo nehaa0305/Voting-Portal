@@ -1,32 +1,30 @@
 const express = require('express');
 const http = require('http');
-
+const cors = require('cors');
 const app = express();
 const server = http.createServer(app);
+
 app.use(express.json());
+app.use(cors());
 
 let votes = { for: 0, against: 0 };
 const userVotes = {}; // Track user votes by userId
 
 const resetPassword = 'sedsantarikshforever';
 
-// Route to get the current votes
+// Route to get current votes
 app.get('/api/votes', (req, res) => {
   res.json(votes);
 });
 
-// Route to cast a vote or reset votes
-app.post('/api/vote', (req, res) => {
+// Route to handle voting and reset
+app.post('/api/votes', (req, res) => {
   const { type, userId, password } = req.body;
 
-  if (type === 'reset' && password === resetPassword) {
-    votes = { for: 0, against: 0 };
-    Object.keys(userVotes).forEach((key) => delete userVotes[key]);
-    return res.status(200).send('Votes reset');
-  }
-
+  // Handle voting
   if (type === 'for' || type === 'against') {
     if (userVotes[userId]) {
+      // Adjust the previous vote
       if (userVotes[userId] === 'for') {
         votes.for -= 1;
       } else if (userVotes[userId] === 'against') {
@@ -36,16 +34,22 @@ app.post('/api/vote', (req, res) => {
 
     userVotes[userId] = type;
 
+    // Add the new vote
     if (type === 'for') {
       votes.for += 1;
     } else if (type === 'against') {
       votes.against += 1;
     }
-
-    return res.status(200).send('Vote updated');
+    res.status(200).send('Vote registered');
   }
-
-  res.status(400).send('Invalid request');
+  // Handle reset
+  else if (type === 'reset' && password === resetPassword) {
+    votes = { for: 0, against: 0 };
+    Object.keys(userVotes).forEach((key) => delete userVotes[key]);
+    res.status(200).send('Votes reset');
+  } else {
+    res.status(400).send('Invalid request');
+  }
 });
 
 // Start the server
