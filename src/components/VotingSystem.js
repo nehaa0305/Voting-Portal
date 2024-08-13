@@ -1,6 +1,6 @@
 // src/components/VotingSystem.js
 
-'use client'; // Add this line to mark this component as a Client Component
+'use client';
 
 import { useState, useEffect } from 'react';
 
@@ -9,10 +9,10 @@ const VotingSystem = () => {
   const [userVote, setUserVote] = useState(null);
 
   useEffect(() => {
-    // Fetch initial votes
     fetch('/api/votes')
       .then(response => response.json())
-      .then(data => setVotes(data));
+      .then(data => setVotes(data))
+      .catch(error => console.error('Error fetching votes:', error));
   }, []);
 
   const userId = 'user-unique-id'; // Replace with an actual unique user identifier
@@ -35,7 +35,8 @@ const VotingSystem = () => {
         // Fetch updated votes
         fetch('/api/votes')
           .then(response => response.json())
-          .then(data => setVotes(data));
+          .then(data => setVotes(data))
+          .catch(error => console.error('Error fetching votes:', error));
       })
       .catch(error => console.error('Error:', error));
   };
@@ -55,7 +56,8 @@ const VotingSystem = () => {
           // Fetch updated votes
           fetch('/api/votes')
             .then(response => response.json())
-            .then(data => setVotes(data));
+            .then(data => setVotes(data))
+            .catch(error => console.error('Error fetching votes:', error));
         })
         .catch(error => console.error('Error:', error));
     }
