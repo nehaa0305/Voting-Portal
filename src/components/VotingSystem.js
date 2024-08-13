@@ -8,7 +8,7 @@ const VotingSystem = () => {
 
   useEffect(() => {
     // Update WebSocket URL to the Vercel deployment URL
-    const ws = new WebSocket('wss://voting-portal-kwug1y6yz-nehaa-shris-projects.vercel.app/api/websocket');
+    const ws = new WebSocket('wss://voting-portal-2dps.vercel.app/api/websocket');
 
     ws.onmessage = (event) => {
       const updatedVotes = JSON.parse(event.data);
@@ -28,7 +28,7 @@ const VotingSystem = () => {
     }
 
     // Update WebSocket URL to the Vercel deployment URL
-    const ws = new WebSocket('wss://voting-portal-kwug1y6yz-nehaa-shris-projects.vercel.app/api/websocket');
+    const ws = new WebSocket('wss://voting-portal-2dps.vercel.app/api/websocket');
     ws.onopen = () => {
       ws.send(JSON.stringify({ type, userId }));
       setUserVote(type);
@@ -45,7 +45,7 @@ const VotingSystem = () => {
     const password = prompt("Enter password to reset votes:");
     if (password) {
       // Update WebSocket URL to the Vercel deployment URL
-      const ws = new WebSocket('voting-portal-kwug1y6yz-nehaa-shris-projects.vercel.app/api/websocket');
+      const ws = new WebSocket('voting-portal-2dps.vercel.app/api/websocket');
       ws.onopen = () => {
         ws.send(JSON.stringify({ type: 'reset', password }));
       };
