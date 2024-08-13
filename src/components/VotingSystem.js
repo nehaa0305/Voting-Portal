@@ -28,7 +28,7 @@ const VotingSystem = () => {
     }
 
     // Update WebSocket URL to the Vercel deployment URL
-    const ws = new WebSocket('wss://your-vercel-project-url/api/websocket');
+    const ws = new WebSocket('wss://voting-portal-five.vercel.app/api/websocket');
     ws.onopen = () => {
       ws.send(JSON.stringify({ type, userId }));
       setUserVote(type);
@@ -45,7 +45,7 @@ const VotingSystem = () => {
     const password = prompt("Enter password to reset votes:");
     if (password) {
       // Update WebSocket URL to the Vercel deployment URL
-      const ws = new WebSocket('wss://your-vercel-project-url/api/websocket');
+      const ws = new WebSocket('wss://voting-portal-five.vercel.app/api/websocket');
       ws.onopen = () => {
         ws.send(JSON.stringify({ type: 'reset', password }));
       };
