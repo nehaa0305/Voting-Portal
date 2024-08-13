@@ -1,0 +1,12 @@
+@import 'bulma/css/bulma.min.css';
+/* Example from astronomy-themed template */
+body {
+  background: url('../../astronomy-background.jfif') no-repeat center center fixed;
+  background-size: cover;
+  color: white;
+}
+
+.astronomy-theme .main-content {
+  padding: 3rem;
+  text-align: center;
+}
