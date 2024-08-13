@@ -6,7 +6,7 @@ const userVotes = {}; // Track user votes by userId
 const resetPassword = 'sedsantarikshforever';
 
 export async function GET() {
-  return new Response(JSON.stringify(votes), { status: 200 });
+  return new Response(JSON.stringify({ votes }), { status: 200 });
 }
 
 export async function POST(req) {
@@ -15,7 +15,7 @@ export async function POST(req) {
   if (type === 'reset' && password === resetPassword) {
     votes = { for: 0, against: 0 };
     Object.keys(userVotes).forEach((key) => delete userVotes[key]);
-    return new Response('Votes reset', { status: 200 });
+    return new Response(JSON.stringify({ votes }), { status: 200 });
   }
 
   if (type === 'for' || type === 'against') {
@@ -37,7 +37,7 @@ export async function POST(req) {
       votes.against += 1;
     }
 
-    return new Response('Vote updated', { status: 200 });
+    return new Response(JSON.stringify({ votes }), { status: 200 });
   }
 
   return new Response('Invalid request', { status: 400 });
