@@ -54,11 +54,6 @@ wss.on('connection', (ws) => {
   });
 });
 
-// Route to serve the WebSocket on the /api/websocket path
-app.get('/api/websocket', (req, res) => {
-  res.status(200).send('WebSocket server is running');
-});
-
 // Start the server
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
