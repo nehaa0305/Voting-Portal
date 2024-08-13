@@ -1,57 +1,51 @@
-const WebSocket = require('ws');
-const http = require('http');
 const express = require('express');
+const http = require('http');
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+app.use(express.json());
 
 let votes = { for: 0, against: 0 };
 const userVotes = {}; // Track user votes by userId
 
 const resetPassword = 'sedsantarikshforever';
 
-// WebSocket connection handling
-wss.on('connection', (ws) => {
-  // Send current votes to the new client
-  ws.send(JSON.stringify(votes));
+// Route to get the current votes
+app.get('/api/votes', (req, res) => {
+  res.json(votes);
+});
 
-  ws.on('message', (message) => {
-    const { type, userId, password } = JSON.parse(message);
+// Route to cast a vote or reset votes
+app.post('/api/vote', (req, res) => {
+  const { type, userId, password } = req.body;
 
-    // Handle voting
-    if (type === 'for' || type === 'against') {
-      if (userVotes[userId]) {
-        // Adjust the previous vote
-        if (userVotes[userId] === 'for') {
-          votes.for -= 1;
-        } else if (userVotes[userId] === 'against') {
-          votes.against -= 1;
-        }
-      }
+  if (type === 'reset' && password === resetPassword) {
+    votes = { for: 0, against: 0 };
+    Object.keys(userVotes).forEach((key) => delete userVotes[key]);
+    return res.status(200).send('Votes reset');
+  }
 
-      userVotes[userId] = type;
-
-      // Add the new vote
-      if (type === 'for') {
-        votes.for += 1;
-      } else if (type === 'against') {
-        votes.against += 1;
+  if (type === 'for' || type === 'against') {
+    if (userVotes[userId]) {
+      if (userVotes[userId] === 'for') {
+        votes.for -= 1;
+      } else if (userVotes[userId] === 'against') {
+        votes.against -= 1;
       }
     }
-    // Handle reset
-    else if (type === 'reset' && password === resetPassword) {
-      votes = { for: 0, against: 0 };
-      Object.keys(userVotes).forEach((key) => delete userVotes[key]);
+
+    userVotes[userId] = type;
+
+    if (type === 'for') {
+      votes.for += 1;
+    } else if (type === 'against') {
+      votes.against += 1;
     }
 
-    // Broadcast the updated votes to all connected clients
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(votes));
-      }
-    });
-  });
+    return res.status(200).send('Vote updated');
+  }
+
+  res.status(400).send('Invalid request');
 });
 
 // Start the server
