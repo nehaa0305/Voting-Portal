@@ -15,7 +15,7 @@ const VotingSystem = () => {
     fetch('/api/votes')
       .then(response => response.json())
       .then(data => {
-        setVotes(data.votes);
+        setVotes(data.votes || { for: 0, against: 0 });
       })
       .catch(error => console.error('Error fetching votes:', error));
   }, []);
@@ -38,7 +38,7 @@ const VotingSystem = () => {
         // Fetch updated votes
         fetch('/api/votes')
           .then(response => response.json())
-          .then(data => setVotes(data.votes))
+          .then(data => setVotes(data.votes || { for: 0, against: 0 }))
           .catch(error => console.error('Error fetching votes:', error));
       })
       .catch(error => console.error('Error:', error));
@@ -59,7 +59,7 @@ const VotingSystem = () => {
           // Fetch updated votes
           fetch('/api/votes')
             .then(response => response.json())
-            .then(data => setVotes(data.votes))
+            .then(data => setVotes(data.votes || { for: 0, against: 0 }))
             .catch(error => console.error('Error fetching votes:', error));
         })
         .catch(error => console.error('Error:', error));
