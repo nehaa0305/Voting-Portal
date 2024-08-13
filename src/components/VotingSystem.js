@@ -1,5 +1,7 @@
 // src/components/VotingSystem.js
 
+'use client'; // Add this line to mark this component as a Client Component
+
 import { useState, useEffect } from 'react';
 
 const VotingSystem = () => {
