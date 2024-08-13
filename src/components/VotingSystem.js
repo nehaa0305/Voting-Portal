@@ -5,14 +5,27 @@ import { useState, useEffect } from 'react';
 const VotingSystem = () => {
   const [votes, setVotes] = useState({ for: 0, against: 0 });
   const [userVote, setUserVote] = useState(null);
+  const [ws, setWs] = useState(null);
 
   useEffect(() => {
-    // Update WebSocket URL to the Vercel deployment URL
-    const ws = new WebSocket('wss://voting-portal-2dps.vercel.app/api/websocket');
+    const ws = new WebSocket('wss://your-deployment-url/api/websocket');
+    setWs(ws);
+
+    ws.onopen = () => {
+      console.log('WebSocket connection opened');
+    };
 
     ws.onmessage = (event) => {
       const updatedVotes = JSON.parse(event.data);
       setVotes(updatedVotes);
+    };
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
     };
 
     return () => {
@@ -20,41 +33,19 @@ const VotingSystem = () => {
     };
   }, []);
 
-  const userId = 'user-unique-id'; // Replace with an actual unique user identifier
-
   const handleVote = (type) => {
-    if (userVote === type) {
-      return; // No action if user is trying to vote the same again
-    }
+    if (userVote === type) return;
 
-    // Update WebSocket URL to the Vercel deployment URL
-    const ws = new WebSocket('wss://voting-portal-2dps.vercel.app/api/websocket');
-    ws.onopen = () => {
-      ws.send(JSON.stringify({ type, userId }));
+    if (ws) {
+      ws.send(JSON.stringify({ type, userId: 'user-unique-id' }));
       setUserVote(type);
-    };
-    ws.onclose = () => {
-      console.log(`Connection closed after sending ${type} vote`);
-    };
-    ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-    };
+    }
   };
 
   const handleReset = () => {
     const password = prompt("Enter password to reset votes:");
-    if (password) {
-      // Update WebSocket URL to the Vercel deployment URL
-      const ws = new WebSocket('voting-portal-2dps.vercel.app/api/websocket');
-      ws.onopen = () => {
-        ws.send(JSON.stringify({ type: 'reset', password }));
-      };
-      ws.onclose = () => {
-        console.log('Connection closed after sending reset vote');
-      };
-      ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
-      };
+    if (password && ws) {
+      ws.send(JSON.stringify({ type: 'reset', password }));
     }
   };
 
@@ -66,14 +57,12 @@ const VotingSystem = () => {
           <button
             onClick={() => handleVote('for')}
             className={`button is-large ${userVote === 'for' ? 'is-success' : 'is-primary'} mr-4`}
-            style={{ marginRight: '20px', backgroundColor: userVote === 'for' ? '#48c774' : '#7a7a7a' }}
           >
             For
           </button>
           <button
             onClick={() => handleVote('against')}
             className={`button is-large ${userVote === 'against' ? 'is-danger' : 'is-primary'}`}
-            style={{ marginLeft: '20px', backgroundColor: userVote === 'against' ? '#f14668' : '#7a7a7a' }}
           >
             Against
           </button>
@@ -88,7 +77,6 @@ const VotingSystem = () => {
         <button
           onClick={handleReset}
           className="button is-warning is-large"
-          style={{ backgroundColor: '#ffdd57' }}
         >
           Reset Votes
         </button>
