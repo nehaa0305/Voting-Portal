@@ -1,25 +1,28 @@
-// src/components/VotingSystem.js
-
 'use client';
 
 import { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid'; // Import UUID library for unique ID generation
+
+const generateUserId = () => {
+  return `${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+};
 
 const VotingSystem = () => {
   const [votes, setVotes] = useState({ for: 0, against: 0 });
   const [userVote, setUserVote] = useState(null);
-  const [userId] = useState(uuidv4()); // Generate a unique ID for the session
+  const [userId] = useState(() => generateUserId());
 
   useEffect(() => {
     fetch('/api/votes')
       .then(response => response.json())
-      .then(data => setVotes(data))
+      .then(data => {
+        setVotes(data.votes);
+      })
       .catch(error => console.error('Error fetching votes:', error));
   }, []);
 
   const handleVote = (type) => {
     if (userVote === type) {
-      return; // No action if user is trying to vote the same again
+      return; // No action if the user is trying to vote the same again
     }
 
     fetch('/api/votes', {
@@ -35,7 +38,7 @@ const VotingSystem = () => {
         // Fetch updated votes
         fetch('/api/votes')
           .then(response => response.json())
-          .then(data => setVotes(data))
+          .then(data => setVotes(data.votes))
           .catch(error => console.error('Error fetching votes:', error));
       })
       .catch(error => console.error('Error:', error));
@@ -56,7 +59,7 @@ const VotingSystem = () => {
           // Fetch updated votes
           fetch('/api/votes')
             .then(response => response.json())
-            .then(data => setVotes(data))
+            .then(data => setVotes(data.votes))
             .catch(error => console.error('Error fetching votes:', error));
         })
         .catch(error => console.error('Error:', error));
