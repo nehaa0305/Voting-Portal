@@ -1,27 +1,14 @@
 // src/components/VotingSystem.js
 
-'use client'; // Ensure this component is treated as a client-side component
+'use client';
 
 import { useState, useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid'; // Import UUID library for unique ID generation
 
 const VotingSystem = () => {
   const [votes, setVotes] = useState({ for: 0, against: 0 });
   const [userVote, setUserVote] = useState(null);
-
-  // Check if we're running in a browser
-  const getUserId = () => {
-    if (typeof window !== 'undefined') {
-      let userId = localStorage.getItem('userId');
-      if (!userId) {
-        userId = 'user-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('userId', userId);
-      }
-      return userId;
-    }
-    return null; // Handle server-side gracefully
-  };
-
-  const userId = getUserId();
+  const [userId] = useState(uuidv4()); // Generate a unique ID for the session
 
   useEffect(() => {
     fetch('/api/votes')
