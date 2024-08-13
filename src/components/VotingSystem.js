@@ -1,3 +1,5 @@
+// src/components/VotingSystem.js
+
 import { useState, useEffect } from 'react';
 
 const VotingSystem = () => {
@@ -18,7 +20,7 @@ const VotingSystem = () => {
       return; // No action if user is trying to vote the same again
     }
 
-    fetch('/api/vote', {
+    fetch('/api/votes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,7 +41,7 @@ const VotingSystem = () => {
   const handleReset = () => {
     const password = prompt("Enter password to reset votes:");
     if (password) {
-      fetch('/api/vote', {
+      fetch('/api/votes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
