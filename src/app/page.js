@@ -1,5 +1,5 @@
 import VotingSystem from '../components/VotingSystem';
-import Navbar from '../components/Navbar';
+import Navbar from '../components/NavBar';
 
 export default function Home() {
   return (

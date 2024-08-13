@@ -1,12 +1,11 @@
 const WebSocket = require('ws');
-const http = require('http');
-const server = http.createServer();
-const wss = new WebSocket.Server({ server });
 
 let votes = { for: 0, against: 0 };
 const userVotes = {}; // Track user votes by userId
 
 const resetPassword = 'sedsantarikshforever';
+
+const wss = new WebSocket.Server({ noServer: true });
 
 wss.on('connection', (ws) => {
   ws.send(JSON.stringify(votes));
@@ -43,6 +42,13 @@ wss.on('connection', (ws) => {
   });
 });
 
-server.listen(3001, () => {
-  console.log('WebSocket server is listening on port 3001');
-});
+export default function handler(req, res) {
+  if (req.method === 'GET') {
+    wss.handleUpgrade(req, req.socket, Buffer.alloc(0), onSocketConnect);
+  }
+  res.end();
+}
+
+function onSocketConnect(ws) {
+  wss.emit('connection', ws, ws.req);
+}

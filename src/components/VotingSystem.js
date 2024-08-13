@@ -7,7 +7,8 @@ const VotingSystem = () => {
   const [userVote, setUserVote] = useState(null);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:3001');
+    // Update WebSocket URL to the Vercel deployment URL
+    const ws = new WebSocket('wss://voting-portal-5pq6v1xm3-nehaa-shris-projects.vercel.app/api/websocket');
 
     ws.onmessage = (event) => {
       const updatedVotes = JSON.parse(event.data);
@@ -26,7 +27,8 @@ const VotingSystem = () => {
       return; // No action if user is trying to vote the same again
     }
 
-    const ws = new WebSocket('ws://localhost:3001');
+    // Update WebSocket URL to the Vercel deployment URL
+    const ws = new WebSocket('wss://your-vercel-project-url/api/websocket');
     ws.onopen = () => {
       ws.send(JSON.stringify({ type, userId }));
       setUserVote(type);
@@ -42,7 +44,8 @@ const VotingSystem = () => {
   const handleReset = () => {
     const password = prompt("Enter password to reset votes:");
     if (password) {
-      const ws = new WebSocket('ws://localhost:3001');
+      // Update WebSocket URL to the Vercel deployment URL
+      const ws = new WebSocket('wss://your-vercel-project-url/api/websocket');
       ws.onopen = () => {
         ws.send(JSON.stringify({ type: 'reset', password }));
       };
