@@ -8,7 +8,7 @@ const VotingSystem = () => {
   const [ws, setWs] = useState(null);
 
   useEffect(() => {
-    const ws = new WebSocket('wss://your-deployment-url/api/websocket');
+    const ws = new WebSocket('wss://voting-portal-2dps.vercel.app/api/websocket');
     setWs(ws);
 
     ws.onopen = () => {
