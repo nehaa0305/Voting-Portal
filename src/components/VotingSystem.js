@@ -1,18 +1,24 @@
-'use client';
+// src/components/VotingSystem.js
+
+'use client'; // Ensure this component is treated as a client-side component
+
 import { useState, useEffect } from 'react';
 
 const VotingSystem = () => {
   const [votes, setVotes] = useState({ for: 0, against: 0 });
   const [userVote, setUserVote] = useState(null);
 
-  // Retrieve or generate a unique userId
+  // Check if we're running in a browser
   const getUserId = () => {
-    let userId = localStorage.getItem('userId');
-    if (!userId) {
-      userId = 'user-' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('userId', userId);
+    if (typeof window !== 'undefined') {
+      let userId = localStorage.getItem('userId');
+      if (!userId) {
+        userId = 'user-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('userId', userId);
+      }
+      return userId;
     }
-    return userId;
+    return null; // Handle server-side gracefully
   };
 
   const userId = getUserId();
@@ -26,7 +32,7 @@ const VotingSystem = () => {
 
   const handleVote = (type) => {
     if (userVote === type) {
-      return; // No action if the user is trying to vote the same again
+      return; // No action if user is trying to vote the same again
     }
 
     fetch('/api/votes', {
