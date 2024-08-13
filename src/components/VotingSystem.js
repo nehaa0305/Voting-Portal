@@ -2,27 +2,27 @@
 
 import { useState, useEffect } from 'react';
 
+// Simple function to generate a unique user ID
 const generateUserId = () => {
-  return `${Date.now()}-${Math.floor(Math.random() * 1000000)}`;
+  return `user-${Math.random().toString(36).substr(2, 9)}`;
 };
 
 const VotingSystem = () => {
   const [votes, setVotes] = useState({ for: 0, against: 0 });
   const [userVote, setUserVote] = useState(null);
-  const [userId] = useState(() => generateUserId());
+  const [userId] = useState(generateUserId());
 
   useEffect(() => {
+    // Fetch initial votes
     fetch('/api/votes')
       .then(response => response.json())
-      .then(data => {
-        setVotes(data.votes || { for: 0, against: 0 });
-      })
+      .then(data => setVotes(data.votes || { for: 0, against: 0 }))
       .catch(error => console.error('Error fetching votes:', error));
   }, []);
 
   const handleVote = (type) => {
     if (userVote === type) {
-      return; // No action if the user is trying to vote the same again
+      return; // No action if user is trying to vote the same again
     }
 
     fetch('/api/votes', {
@@ -32,14 +32,10 @@ const VotingSystem = () => {
       },
       body: JSON.stringify({ type, userId }),
     })
-      .then(response => response.text())
-      .then(() => {
+      .then(response => response.json())
+      .then(data => {
         setUserVote(type);
-        // Fetch updated votes
-        fetch('/api/votes')
-          .then(response => response.json())
-          .then(data => setVotes(data.votes || { for: 0, against: 0 }))
-          .catch(error => console.error('Error fetching votes:', error));
+        setVotes(data.votes || { for: 0, against: 0 });
       })
       .catch(error => console.error('Error:', error));
   };
@@ -54,13 +50,9 @@ const VotingSystem = () => {
         },
         body: JSON.stringify({ type: 'reset', password }),
       })
-        .then(response => response.text())
-        .then(() => {
-          // Fetch updated votes
-          fetch('/api/votes')
-            .then(response => response.json())
-            .then(data => setVotes(data.votes || { for: 0, against: 0 }))
-            .catch(error => console.error('Error fetching votes:', error));
+        .then(response => response.json())
+        .then(data => {
+          setVotes(data.votes || { for: 0, against: 0 });
         })
         .catch(error => console.error('Error:', error));
     }
